@@ -2,6 +2,8 @@ import datetime
 import os.path
 from tkinter import *
 from tkinter.ttk import *
+import subprocess as sp
+sp.run("pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib")
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
