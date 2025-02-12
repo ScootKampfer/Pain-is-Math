@@ -12,7 +12,7 @@ from googleapiclient.errors import HttpError
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 
 root = Tk()
-root.title("Décompte avant la mort")
+root.title("Décompte math")
 
 lbl = Label(root, font=('calibri', 100, 'bold'),
             background='white',
