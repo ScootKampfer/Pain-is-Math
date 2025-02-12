@@ -3,6 +3,7 @@ import os.path
 from tkinter import *
 from tkinter.ttk import *
 import subprocess as sp
+
 sp.run("pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib")
 
 from google.auth.transport.requests import Request
@@ -16,7 +17,7 @@ SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 root = Tk()
 root.title("Décompte math")
 
-lbl = Label(root, font=('calibri', 100, 'bold'),
+lbl = Label(root, font=('calibri', 50, 'bold'),
             background='white',
             foreground='black')
 
@@ -24,9 +25,9 @@ lbl.pack(anchor='center')
 
 def clock(time_left, event_time, event_end, status):
     if status == 1:
-        lbl.config(text=str(f"Time before: {time_left}"))
+        lbl.config(text=str(f"Temps avant la souffrance: {time_left}"))
     elif status == 2:
-        lbl.config(text=str(f"Time left: {time_left}"))
+        lbl.config(text=str(f"Temps avant la fin de la souffrance: {time_left}"))
     lbl.after(1000, lambda: update_clock(event_time, event_end))
 
 def update_clock(event_time, event_end):
@@ -60,7 +61,7 @@ def main():
     try:
         service = build("calendar", "v3", credentials=creds)
 
-        now = datetime.datetime.utcnow().isoformat() + "Z"  # 'Z' indicates UTC time
+        now = datetime.datetime.utcnow().isoformat() + "Z"
         events_result = (
             service.events()
             .list(
