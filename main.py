@@ -44,7 +44,7 @@ def update_clock(event_time, event_end):
     if time_left < datetime.datetime(2018,12,1)-datetime.datetime(2018,12,1):
         time_left = event_end - current_time
         if time_left < datetime.datetime(2018,12,1)-datetime.datetime(2018,12,1):
-            sp.run("cd C:\Users\gaben\OneDrive\Documents\Coding Projects\Pain is Math")
+            sp.run("cd C:\\Users\\gaben\\OneDrive\\Documents\\Coding Projects\\Pain is Math")
             sp.run("python .\\main.py")
             exit()
         else:
