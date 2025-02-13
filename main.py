@@ -4,7 +4,13 @@ from tkinter import *
 from tkinter.ttk import *
 import subprocess as sp
 
-sp.run("pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib")
+if os.path.exists("api-install.json"):
+    print("Everything looks fine")
+else:
+    sp.run("pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib")
+    with open("api-install.json", "w") as contri:
+
+        contri.write("It's a-ok!")
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
