@@ -23,6 +23,8 @@ SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 root = Tk()
 root.title("Décompte math")
 
+creds = None
+
 lbl = Label(root, font=('calibri', 50, 'bold'),
             background='white',
             foreground='black')
@@ -46,8 +48,6 @@ def update_clock(event_time, event_end):
         clock(time_left, event_time, event_end, 1)
 
 def main():
-
-    creds = None
 
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
@@ -97,7 +97,7 @@ def main():
                 
                 update_clock(event_time, event_end)
                 break
-
+            
     except HttpError as error:
         print(f"An error occurred: {error}")
 
