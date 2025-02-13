@@ -27,7 +27,7 @@ def clock(time_left, event_time, event_end, status):
     if status == 1:
         lbl.config(text=str(f"Temps avant la souffrance: {time_left}"))
     elif status == 2:
-        lbl.config(text=str(f"Temps avant la fin de la souffrance: {time_left}"))
+        lbl.config(text=str(f"Temps avant la fin de la souffrance: {int(time_left.total_seconds())} secondes"))
     lbl.after(1000, lambda: update_clock(event_time, event_end))
 
 def update_clock(event_time, event_end):
