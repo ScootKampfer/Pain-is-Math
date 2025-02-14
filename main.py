@@ -26,6 +26,9 @@ root = Tk()
 root.title("Décompte")
 
 creds = None
+class_id1 = None
+class_id2 = None
+class_id3 = None
 
 lbl = Label(root, font=('calibri', 40, 'bold'),
             background='white',
@@ -33,29 +36,49 @@ lbl = Label(root, font=('calibri', 40, 'bold'),
 
 lbl.pack(anchor='center')
 
-def clock(time_left, event_time, event_end, status, class_chosen):
+def clock(time_left, event_time, event_end, status, class_chosen, events):
     if status == 1:
         lbl.config(text=str(f"Temps restant avant {class_chosen}: {time_left}"))
     elif status == 2:
-        lbl.config(text=str(f"Il reste {int(time_left.total_seconds())} secondes avant la fin du cours {class_chosen}"))
-    lbl.after(1000, lambda: update_clock(event_time, event_end, class_chosen))
+        lbl.config(text=str(f"Il reste {int(time_left.total_seconds())} secondes avant la fin du cours de {class_chosen}"))
+    lbl.after(1000, lambda: update_clock(event_time, event_end, class_chosen, events))
 
-def update_clock(event_time, event_end, class_chosen):
+def update_clock(event_time, event_end, class_chosen, events):
     current_time = datetime.datetime.utcnow().replace(microsecond=0)
     time_left = event_time - current_time
     if time_left < datetime.datetime(2018,12,1)-datetime.datetime(2018,12,1):
         time_left = event_end - current_time
         if time_left < datetime.datetime(2018,12,1)-datetime.datetime(2018,12,1):
-            os.system("cd C:\\Users\\gaben\\OneDrive\\Documents\\Coding Projects\\Pain is Math")
-            os.system("python .\\main.py")
-            exit()
+            check_events()
         else:
-            clock(time_left, event_time, event_end, 2, class_chosen)
+            clock(time_left, event_time, event_end, 2, class_chosen, events)
     else:
-        clock(time_left, event_time, event_end, 1, class_chosen)
+        clock(time_left, event_time, event_end, 1, class_chosen, events)
+
+def check_events():
+
+    global event_time
+    global event_end
+    for event in events:
+            if event["summary"] == class_id1 or event["summary"] == class_id2 or event["summary"] == class_id3:
+                raw_date_data = event["start"]
+                raw_date = raw_date_data['dateTime']
+                raw_end_data = event["end"]
+                raw_end = raw_end_data["dateTime"]
+                
+                event_time = datetime.datetime.fromisoformat(raw_date[:-1]).replace(microsecond=0)
+                event_end = datetime.datetime.fromisoformat(raw_end[:-1]).replace(microsecond=0)
+                
+                update_clock(event_time, event_end, class_chosen, events)
+                break
 
 def main():
 
+    global class_chosen
+    global events
+    global class_id1
+    global class_id2
+    global class_id3
     class_chosen = None
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
@@ -109,18 +132,7 @@ def main():
             class_id2 = "Professional edging class-00097"
             class_id3 = "How to be a good banker-00012"
 
-        for event in events:
-            if event["summary"] == class_id1 or event["summary"] == class_id2 or event["summary"] == class_id3:
-                raw_date_data = event["start"]
-                raw_date = raw_date_data['dateTime']
-                raw_end_data = event["end"]
-                raw_end = raw_end_data["dateTime"]
-                
-                event_time = datetime.datetime.fromisoformat(raw_date[:-1]).replace(microsecond=0)
-                event_end = datetime.datetime.fromisoformat(raw_end[:-1]).replace(microsecond=0)
-                
-                update_clock(event_time, event_end, class_chosen)
-                break
+        check_events()
             
     except HttpError as error:
         print(f"Erreur: {error}")
