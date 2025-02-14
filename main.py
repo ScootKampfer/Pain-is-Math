@@ -106,7 +106,7 @@ def main():
             .list(
                 calendarId="n8t99kbton3tffah1ec0jgudtia4o9sk@import.calendar.google.com",
                 timeMin=now,
-                maxResults=100,
+                maxResults=1000,
                 singleEvents=True,
                 orderBy="startTime",
             )
