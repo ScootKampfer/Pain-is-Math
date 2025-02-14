@@ -61,6 +61,8 @@ def check_events():
     global event_end
     for event in events:
             if event["summary"] == class_id1 or event["summary"] == class_id2 or event["summary"] == class_id3:
+                index_to_del = events.index(event)
+                del events[0:index_to_del]
                 raw_date_data = event["start"]
                 raw_date = raw_date_data['dateTime']
                 raw_end_data = event["end"]
@@ -104,7 +106,7 @@ def main():
             .list(
                 calendarId="n8t99kbton3tffah1ec0jgudtia4o9sk@import.calendar.google.com",
                 timeMin=now,
-                maxResults=50,
+                maxResults=100,
                 singleEvents=True,
                 orderBy="startTime",
             )
