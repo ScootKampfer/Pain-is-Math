@@ -50,6 +50,9 @@ def update_clock(event_time, event_end, class_chosen, events):
         time_left = event_end - current_time
         if time_left < datetime.datetime(2018,12,1)-datetime.datetime(2018,12,1):
             check_events()
+            current_time = datetime.datetime.utcnow().replace(microsecond=0)
+            time_left = event_time - current_time
+            clock(time_left, event_time, event_end, 1, class_chosen, events)
         else:
             clock(time_left, event_time, event_end, 2, class_chosen, events)
     else:
@@ -71,7 +74,6 @@ def check_events():
                 event_time = datetime.datetime.fromisoformat(raw_date[:-1]).replace(microsecond=0)
                 event_end = datetime.datetime.fromisoformat(raw_end[:-1]).replace(microsecond=0)
                 
-                update_clock(event_time, event_end, class_chosen, events)
                 break
 
 def main():
@@ -81,6 +83,8 @@ def main():
     global class_id1
     global class_id2
     global class_id3
+
+
     class_chosen = None
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
@@ -135,6 +139,7 @@ def main():
             class_id3 = "How to be a good banker-00012"
 
         check_events()
+        update_clock(event_time, event_end, class_chosen, events)
             
     except HttpError as error:
         print(f"Erreur: {error}")
