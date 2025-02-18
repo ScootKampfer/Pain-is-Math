@@ -20,7 +20,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
-CLASSES = {"anglais":"Anglais enr. 5-00093", "français":"Français 5-00051", "math":"Math. - SN 5-00095", "mco":None, "programmation":"Programmation 5-00091", "chimie":"Chimie-00094", "physique":"Physique-00051", "éducation Physique":"Éduc. phys. 5-00051", "arts":"Arts plast. 5-00090", "paa":"PAA005-00051"}
+CLASSES = {"anglais":"Anglais enr. 5-00093", "français":"Français 5-00051", "math":"Math. - SN 5-00095", "mco":None, "programmation":"Programmation 5-00091", "chimie":"Chimie-00094", "physique":"Physique-00051", "éducation Physique":"Éduc. phys. 5-00051", "arts plastiques":"Arts plast. 5-00090", "paa":"PAA005-00051"}
 
 root = Tk()
 root.title("Décompte")
@@ -62,12 +62,10 @@ def check_events():
 
     global event_time
     global event_end
-    global events
-
     for event in events:
             if event["summary"] == class_id1 or event["summary"] == class_id2 or event["summary"] == class_id3:
                 index_to_del = events.index(event)
-                events = events[index_to_del:]
+                del events[0:index_to_del]
                 raw_date_data = event["start"]
                 raw_date = raw_date_data['dateTime']
                 raw_end_data = event["end"]
@@ -110,7 +108,7 @@ def main():
         events_result = (
             service.events()
             .list(
-                calendarId="gabenoah8@gmail.com",
+                calendarId="n8t99kbton3tffah1ec0jgudtia4o9sk@import.calendar.google.com",
                 timeMin=now,
                 maxResults=1000,
                 singleEvents=True,
