@@ -20,7 +20,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
-CLASSES = {"anglais":"Anglais enr. 5-00093", "français":"Français 5-00051", "math":"Math. - SN 5-00095", "mco":None, "programmation":"Programmation 5-00091", "chimie":"Chimie-00094", "physique":"Physique-00051", "éducation Physique":"Éduc. phys. 5-00051", "arts plastiques":"Arts plast. 5-00090", "paa":"PAA005-00051"}
+CLASSES = {"anglais":"Anglais enr. 5-00093", "français":"Français 5-00051", "math":"Math. - SN 5-00095", "mco":None, "programmation":"Programmation 5-00091", "chimie":"Chimie-00094", "physique":"Physique-00051", "éducation Physique":"Éduc. phys. 5-00051", "arts":"Arts plast. 5-00090", "paa":"PAA005-00051"}
 
 root = Tk()
 root.title("Décompte")
@@ -29,6 +29,7 @@ creds = None
 class_id1 = None
 class_id2 = None
 class_id3 = None
+good_classes = []
 
 lbl = Label(root, font=('calibri', 40, 'bold'),
             background='white',
@@ -62,19 +63,15 @@ def check_events():
 
     global event_time
     global event_end
-    for event in events:
-            if event["summary"] == class_id1 or event["summary"] == class_id2 or event["summary"] == class_id3:
-                index_to_del = events.index(event)
-                del events[0:index_to_del]
-                raw_date_data = event["start"]
-                raw_date = raw_date_data['dateTime']
-                raw_end_data = event["end"]
-                raw_end = raw_end_data["dateTime"]
-                
-                event_time = datetime.datetime.fromisoformat(raw_date[:-1]).replace(microsecond=0)
-                event_end = datetime.datetime.fromisoformat(raw_end[:-1]).replace(microsecond=0)
-                
-                break
+
+    next_class = good_classes[0]
+    raw_date_data = next_class["start"]
+    raw_date = raw_date_data['dateTime']
+    raw_end_data = next_class["end"]
+    raw_end = raw_end_data["dateTime"]
+    good_classes.pop(0)
+    event_time = datetime.datetime.fromisoformat(raw_date[:-1]).replace(microsecond=0)
+    event_end = datetime.datetime.fromisoformat(raw_end[:-1]).replace(microsecond=0)
 
 def main():
 
@@ -83,6 +80,8 @@ def main():
     global class_id1
     global class_id2
     global class_id3
+    global event_time
+    global event_end
 
 
     class_chosen = None
@@ -138,6 +137,11 @@ def main():
             class_id2 = "Professional edging class-00097"
             class_id3 = "How to be a good banker-00012"
 
+        for event in events:
+            if event["summary"] == class_id1 or event["summary"] == class_id2 or event["summary"] == class_id3:
+
+                good_classes.append(event)
+        
         check_events()
         update_clock(event_time, event_end, class_chosen, events)
             
