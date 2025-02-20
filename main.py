@@ -30,6 +30,7 @@ class_id1 = None
 class_id2 = None
 class_id3 = None
 good_classes = []
+index = 0
 
 lbl = Label(root, font=('calibri', 40, 'bold'),
             background='white',
@@ -63,13 +64,14 @@ def check_events():
 
     global event_time
     global event_end
+    global index
 
-    next_class = good_classes[0]
+    next_class = good_classes[index]
+    index += 1
     raw_date_data = next_class["start"]
     raw_date = raw_date_data['dateTime']
     raw_end_data = next_class["end"]
     raw_end = raw_end_data["dateTime"]
-    good_classes.pop(0)
     event_time = datetime.datetime.fromisoformat(raw_date[:-1]).replace(microsecond=0)
     event_end = datetime.datetime.fromisoformat(raw_end[:-1]).replace(microsecond=0)
 
@@ -82,6 +84,7 @@ def main():
     global class_id3
     global event_time
     global event_end
+    global creds
 
 
     class_chosen = None
