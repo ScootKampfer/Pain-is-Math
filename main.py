@@ -10,7 +10,6 @@ if os.path.exists("api-install.json"):
 else:
     sp.run("pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib")
     with open("api-install.json", "w") as contri:
-
         contri.write("It's a-ok!")
 
 from google.auth.transport.requests import Request
@@ -26,45 +25,50 @@ root = Tk()
 root.title("Décompte")
 
 creds = None
-class_id1 = None
+class_id1 = None 
 class_id2 = None
 class_id3 = None
+class_chosen = None
 good_classes = []
 index = 0
 
-lbl = Label(root, font=('calibri', 40, 'bold'),
-            background='white',
-            foreground='black')
-
+lbl = Label(root, font=('calibri', 40, 'bold'), background='white', foreground='black')
 lbl.pack(anchor='center')
 
-def clock(time_left, event_time, event_end, status, class_chosen, events):
+def clock(status):
+
+    global event_time, event_end, class_chosen, events, time_left
+
     if status == 1:
         lbl.config(text=str(f"Temps restant avant {class_chosen}: {time_left}"))
     elif status == 2:
         lbl.config(text=str(f"Il reste {int(time_left.total_seconds())} secondes avant la fin du cours de {class_chosen}"))
-    lbl.after(1000, lambda: update_clock(event_time, event_end, class_chosen, events))
+    lbl.after(1000, lambda: update_clock())
 
-def update_clock(event_time, event_end, class_chosen, events):
+def update_clock():
+
+    global event_time, event_end, class_chosen, events, time_left
+
     current_time = datetime.datetime.utcnow().replace(microsecond=0)
     time_left = event_time - current_time
+
     if time_left < datetime.datetime(2018,12,1)-datetime.datetime(2018,12,1):
         time_left = event_end - current_time
+
         if time_left < datetime.datetime(2018,12,1)-datetime.datetime(2018,12,1):
+
             check_events()
             current_time = datetime.datetime.utcnow().replace(microsecond=0)
             time_left = event_time - current_time
-            clock(time_left, event_time, event_end, 1, class_chosen, events)
+            clock(1)
         else:
-            clock(time_left, event_time, event_end, 2, class_chosen, events)
+            clock(2)
     else:
-        clock(time_left, event_time, event_end, 1, class_chosen, events)
+        clock(1)
 
 def check_events():
 
-    global event_time
-    global event_end
-    global index
+    global event_time, event_end, index
 
     next_class = good_classes[index]
     index += 1
@@ -77,50 +81,31 @@ def check_events():
 
 def main():
 
-    global class_chosen
-    global events
-    global class_id1
-    global class_id2
-    global class_id3
-    global event_time
-    global event_end
-    global creds
+    global class_chosen, events, class_id1, class_id2, class_id3, event_time, event_end, creds
 
-
-    class_chosen = None
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
+        
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "credentials.json", SCOPES
-            )
+            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
             creds = flow.run_local_server(port=0)
+        
         with open("token.json", "w") as token:
-
             token.write(creds.to_json())
 
     try:
+        
         service = build("calendar", "v3", credentials=creds)
-
         now = datetime.datetime.utcnow().isoformat() + "Z"
-        events_result = (
-            service.events()
-            .list(
-                calendarId="n8t99kbton3tffah1ec0jgudtia4o9sk@import.calendar.google.com",
-                timeMin=now,
-                maxResults=1000,
-                singleEvents=True,
-                orderBy="startTime",
-            )
-            .execute()
-        )
+        events_result = (service.events().list(calendarId="n8t99kbton3tffah1ec0jgudtia4o9sk@import.calendar.google.com", timeMin=now, maxResults=1000, singleEvents=True, orderBy="startTime").execute())
         events = events_result.get("items", [])
 
         if not events:
+
             print("Aucun évènement trouvé!")
             return
         
@@ -131,26 +116,31 @@ def main():
         root.title(f"Décompte {class_chosen}")
         
         if class_chosen == "MCO":
+
             class_id1 = "Cult/cit. Qc 5-00051"
             class_id2 = "Éduc. finan. 5-00051"
             class_id3 = "Monde contem. 5-00051"
             
         else:
+
             class_id1 = CLASSES[class_chosen]
-            class_id2 = "Professional edging class-00097"
-            class_id3 = "How to be a good banker-00012"
+            class_id2 = "filler1"
+            class_id3 = "filler2"
 
         for event in events:
+
             if event["summary"] == class_id1 or event["summary"] == class_id2 or event["summary"] == class_id3:
 
                 good_classes.append(event)
         
         check_events()
-        update_clock(event_time, event_end, class_chosen, events)
+        update_clock()
             
     except HttpError as error:
+
         print(f"Erreur: {error}")
 
 if __name__ == "__main__":
+
     main()
     root.mainloop()
