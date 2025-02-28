@@ -99,7 +99,7 @@ def main():
         
         service = build("calendar", "v3", credentials=creds)
         now = datetime.datetime.utcnow().isoformat() + "Z"
-        events_result = (service.events().list(calendarId="n8t99kbton3tffah1ec0jgudtia4o9sk@import.calendar.google.com", timeMin=now, maxResults=1000, singleEvents=True, orderBy="startTime").execute())
+        events_result = (service.events().list(calendarId="5577cff39e8fcdd31c49d99756dff9c5e069db949b55dfc5e0d4d4ce29265c06@group.calendar.google.com", timeMin=now, maxResults=1000, singleEvents=True, orderBy="startTime").execute())
         events = events_result.get("items", [])
 
         if not events:
