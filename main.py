@@ -19,15 +19,13 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
-CLASSES = {"anglais":"Anglais enr. 5-00093", "français":"Français 5-00051", "math":"Math. - SN 5-00095", "mco":None, "programmation":"Programmation 5-00091", "chimie":"Chimie-00094", "physique":"Physique-00051", "éducation Physique":"Éduc. phys. 5-00051", "arts":"Arts plast. 5-00090", "paa":"PAA005-00051"}
+CLASSES = {"anglais":"AE5536-93", "français":"FRA506-51", "math":"MSN506-95", "mco":"MEDEC5-51", "programmation":"PRO544-91", "chimie":"CHI504-94", "physique":"PHY504-51", "éducation Physique":"EDP502-51", "arts":"ART502-90", "paa":"PAA"}
 
 root = Tk()
 root.title("Décompte")
 
 creds = None
-class_id1 = None 
-class_id2 = None
-class_id3 = None
+class_id = None 
 class_chosen = None
 good_classes = []
 index = 0
@@ -114,22 +112,12 @@ def main():
             class_chosen = input("Nom de la classe que tu souffres dedans: ").lower()
 
         root.title(f"Décompte {class_chosen}")
-        
-        if class_chosen == "MCO":
 
-            class_id1 = "Cult/cit. Qc 5-00051"
-            class_id2 = "Éduc. finan. 5-00051"
-            class_id3 = "Monde contem. 5-00051"
-            
-        else:
-
-            class_id1 = CLASSES[class_chosen]
-            class_id2 = "filler1"
-            class_id3 = "filler2"
+        class_id = CLASSES[class_chosen]
 
         for event in events:
 
-            if event["summary"] == class_id1 or event["summary"] == class_id2 or event["summary"] == class_id3:
+            if event["summary"] == class_id:
 
                 good_classes.append(event)
         
