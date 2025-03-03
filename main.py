@@ -47,7 +47,7 @@ def update_clock():
 
     global event_time, event_end, class_chosen, events, time_left
 
-    current_time = datetime.datetime.utcnow().replace(microsecond=0)
+    current_time = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
     time_left = event_time - current_time
 
     if time_left < datetime.datetime(2018,12,1)-datetime.datetime(2018,12,1):
@@ -56,7 +56,7 @@ def update_clock():
         if time_left < datetime.datetime(2018,12,1)-datetime.datetime(2018,12,1):
 
             check_events()
-            current_time = datetime.datetime.utcnow().replace(microsecond=0)
+            current_time = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
             time_left = event_time - current_time
             clock(1)
         else:
@@ -74,8 +74,9 @@ def check_events():
     raw_date = raw_date_data['dateTime']
     raw_end_data = next_class["end"]
     raw_end = raw_end_data["dateTime"]
-    event_time = datetime.datetime.fromisoformat(raw_date[:-1]).replace(microsecond=0)
-    event_end = datetime.datetime.fromisoformat(raw_end[:-1]).replace(microsecond=0)
+
+    event_time = datetime.datetime.fromisoformat(raw_date).replace(microsecond=0)
+    event_end = datetime.datetime.fromisoformat(raw_end).replace(microsecond=0)
 
 def main():
 
