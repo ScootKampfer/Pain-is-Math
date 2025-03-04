@@ -19,7 +19,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
-CLASSES = {"anglais":"AE5536-93", "français":"FRA506-51", "math":"MSN506-95", "mco":"MEDEC5-51", "programmation":"PRO544-91", "chimie":"CHI504-94", "physique":"PHY504-51", "éducation Physique":"EDP502-51", "arts":"ART502-90", "paa":"PAA"}
+CLASSES = {"anglais":"AE5536-93", "français":"FRA506-51", "math":"MSN506-95", "mco":"MEDEC5-51", "programmation":"PRO544-91", "chimie":"CHI504-94", "physique":"PHY504-51", "éducation Physique":"EDP502-51", "arts":"ART502-90", "paa":"PAA", "next":"next"}
 
 root = Tk()
 root.title("Décompte")
@@ -80,7 +80,7 @@ def check_events():
 
 def main():
 
-    global class_chosen, events, class_id1, class_id2, class_id3, event_time, event_end, creds
+    global class_chosen, events, class_id1, class_id2, class_id3, event_time, event_end, creds, good_classes
 
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
@@ -100,7 +100,7 @@ def main():
         
         service = build("calendar", "v3", credentials=creds)
         now = datetime.datetime.now(datetime.UTC).isoformat().replace("+00:00", "") + "Z"
-        events_result = (service.events().list(calendarId="5577cff39e8fcdd31c49d99756dff9c5e069db949b55dfc5e0d4d4ce29265c06@group.calendar.google.com", timeMin=now, maxResults=1000, singleEvents=True, orderBy="startTime").execute())
+        events_result = (service.events().list(calendarId="5577cff39e8fcdd31c49d99756dff9c5e069db949b55dfc5e0d4d4ce29265c06@group.calendar.google.com", timeMin=now, maxResults=100, singleEvents=True, orderBy="startTime").execute())
         events = events_result.get("items", [])
 
         if not events:
@@ -114,14 +114,26 @@ def main():
 
         root.title(f"Décompte {class_chosen}")
 
-        class_id = CLASSES[class_chosen]
+        if class_chosen == "next":
 
-        for event in events:
-
-            if event["summary"] == class_id:
-
-                good_classes.append(event)
+            good_classes = events
+            next_event = events[0]
+            class_id = next_event["summary"]
+            for class1 in CLASSES:
+                if CLASSES[class1] == class_id:
+                    class_chosen = class1
         
+        else:
+
+            class_id = CLASSES[class_chosen]
+
+            for event in events:
+
+                if event["summary"] == class_id:
+
+                    good_classes.append(event)
+        
+        root.title(f"Décompte {class_chosen}")
         check_events()
         update_clock()
             
