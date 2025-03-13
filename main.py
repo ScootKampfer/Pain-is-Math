@@ -80,7 +80,7 @@ def check_events():
 
 def main():
 
-    global class_chosen, events, class_id1, class_id2, class_id3, event_time, event_end, creds, good_classes
+    global class_chosen, events, event_time, event_end, creds, good_classes
 
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
