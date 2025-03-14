@@ -82,6 +82,7 @@ def check_events():
         for class1 in CLASSES:
             if CLASSES[class1] == class_id:
                 class_chosen = class1
+            root.title(f"Décompte {class_chosen}")
     
     event_time = datetime.datetime.fromisoformat(raw_date).replace(microsecond=0)
     event_end = datetime.datetime.fromisoformat(raw_end).replace(microsecond=0)
