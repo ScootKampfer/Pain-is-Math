@@ -19,7 +19,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
-CLASSES = {"anglais":"AE5536-93", "français":"FRA506-51", "math":"MSN506-95", "mco":"MEDEC5-51", "programmation":"PRO544-91", "chimie":"CHI504-94", "physique":"PHY504-51", "éducation Physique":"EDP502-51", "arts":"ART502-90", "paa":"PAA", "next":"next"}
+CLASSES = {"anglais":"AE5536-93", "français":"FRA506-51", "math":"MSN506-95", "mco":"MEDEC5-51", "programmation":"PRO544-91", "chimie":"CHI504-94", "physique":"PHY504-51", "éducation physique":"EDP502-51", "arts":"ART502-90", "paa":"PAA", "next":"next"}
 
 root = Tk()
 root.title("Décompte")
