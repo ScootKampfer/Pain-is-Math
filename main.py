@@ -29,13 +29,14 @@ class_id = None
 class_chosen = None
 good_classes = []
 index = 0
+mode = 0
 
 lbl = Label(root, font=('calibri', 40, 'bold'), background='white', foreground='black')
 lbl.pack(anchor='center')
 
 def clock(status):
 
-    global event_time, event_end, class_chosen, events, time_left
+    global event_time, event_end, class_chosen, events, time_left, mode
 
     if status == 1:
         lbl.config(text=str(f"Temps restant avant {class_chosen}: {time_left}"))
@@ -66,7 +67,7 @@ def update_clock():
 
 def check_events():
 
-    global event_time, event_end, index
+    global event_time, event_end, index, class_chosen
 
     next_class = good_classes[index]
     index += 1
@@ -74,13 +75,21 @@ def check_events():
     raw_date = raw_date_data['dateTime']
     raw_end_data = next_class["end"]
     raw_end = raw_end_data["dateTime"]
+    
+    if mode == 1:
 
+        class_id = next_class["summary"]
+        for class1 in CLASSES:
+            if CLASSES[class1] == class_id:
+                class_chosen = class1
+    
     event_time = datetime.datetime.fromisoformat(raw_date).replace(microsecond=0)
     event_end = datetime.datetime.fromisoformat(raw_end).replace(microsecond=0)
 
+
 def main():
 
-    global class_chosen, events, event_time, event_end, creds, good_classes
+    global class_chosen, events, event_time, event_end, creds, good_classes, mode
 
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
@@ -124,6 +133,7 @@ def main():
         if class_chosen == "next":
 
             good_classes = events
+            mode = 1
             next_event = events[0]
             class_id = next_event["summary"]
             for class1 in CLASSES:
