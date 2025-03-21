@@ -140,6 +140,8 @@ def main():
             for class1 in CLASSES:
                 if CLASSES[class1] == class_id:
                     class_chosen = class1
+            if class1 not in CLASSES:
+                class_chosen = "surprise!"
         
         else:
 
